@@ -37,6 +37,11 @@ As técnicas e tecnologias utilizadas no projeto são:
 - `Expo Google Fonts`: suporte a fontes do google via Expo
 - `StyleSheet`: estilização básica de componentes
 
+- `Figma`: design das telas e protótipos foram desenvolvidos no Figma. Você pode acessar o design completo no link abaixo:
+
+  [Acesse o design no Figma](https://www.figma.com/design/OUyMIpdfTymuCMswgwQLW4/UniWay?node-id=0-1&node-type=CANVAS&t=zaqm9ZgLMyK2qJOz-0)
+
+
 ## Colaboradores
 
 -  [**Gabriel Auzier**](https://github.com/auziergabriel)
