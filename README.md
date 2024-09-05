@@ -1,4 +1,13 @@
-# UniWay
+<div align="center">
+  <h1 align="center">
+    UniWay
+    <br />
+    <br />
+    <a href="https://github.com/helxysa/UniWay">
+      <img src="./assets/uniWaybranca.svg" width="160px" alt="UniWay">
+    </a>
+  </h1>
+</div>
 
 ### Projeto para a Disciplina Tópicos em Software Básico
 
@@ -12,6 +21,22 @@
 
 - **Benefícios para Universitários:** Apresentar ofertas de bolsas, descontos em serviços e produtos, e outros benefícios exclusivos para a comunidade universitária.
 
+## Técnicas e Tecnologias
+
+As técnicas e tecnologias utilizadas no projeto são:
+
+- `Expo`: tecnologia para simplificar o ambiente de desenvolvimento
+- `Componentes React Native`: componentes já existentes básicos da tecnologia para compor a tela
+  - `Text`: componente para exibir textos
+  - `View`: container para blocos de componentes
+  - `ScrollView`: container para blocos de componentes com barra de rolagem
+  - `Image`: componente para exibir imagens
+  - `TouchableOpacity`: componente para criar áreas clicáveis
+- `Componentes customizados`: criação e utilização de componentes customizados
+- `Suporte a telas`: não permitir que conteúdos estejam sob a *StatusBar* (barra superior nativa) ou barra de gestos do iPhone
+- `Expo Google Fonts`: suporte a fontes do google via Expo
+- `StyleSheet`: estilização básica de componentes
+
 ## Colaboradores
 
 -  [**Gabriel Auzier**](https://github.com/auziergabriel)
@@ -19,7 +44,7 @@
 -  [**Isabella Suto**](https://github.com/BellaSuto)
 -  [**Kelvin Rodrigues**](https://github.com/nivlekrod)
 -  [**Nicolas Veloso**](https://github.com/xNicolosox)
-- [**Rayanne Marques**](https://github.com/RayanneMarques)
+-  [**Rayanne Marques**](https://github.com/RayanneMarques)
 
 
 ---
