@@ -5,6 +5,7 @@ import Register from "./componentes/InitialMenu";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppNavigation from "./AppNavigation";
+import TabNavigation from "./TabNavigation";
 
 export default function App() {
   return <AppNavigation />;

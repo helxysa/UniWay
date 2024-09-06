@@ -5,6 +5,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import SlideBar from "./componentes/SlideBar";
 import InitialMenu from "./componentes/InitialMenu";
 import Register from "./componentes/Register";
+import Login from "./componentes/LogIn";
+import HomeScreen from "./componentes/HomeScreen";
+import TabNavigation from "./TabNavigation";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +28,21 @@ function AppNavigation() {
         <Stack.Screen
           name="Register"
           component={Register}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TabNavigation"
+          component={TabNavigation}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

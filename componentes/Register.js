@@ -1,33 +1,91 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { FontAwesome } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [users, setUsers] = useState([]);
+  const navigation = useNavigation();
 
   const courses = ['Ciência da Computação', 'Engenharia Elétrica', 'Relações Internacionais'];
 
-  const handleRegister = () => {
-    if (!name || !course || !phone || !password) {
+  const handleRegister = async () => {
+    console.log('Iniciando registro...');
+    if (!name || !course || !email || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
 
-    const newUser = { name, course, phone, password };
-    setUsers([...users, newUser]);
-    Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
-    setName('');
-    setCourse('');
-    setPhone('');
-    setPassword('');
+    const newUser = { name, email, course, password };
+    console.log('Dados de registro:', JSON.stringify(newUser, null, 2));
+
+    try {
+      console.log('Fazendo requisição para:', 'https://api-uniway.onrender.com/users');
+      const response = await axios.post('https://api-uniway.onrender.com/users', newUser);
+      console.log('Resposta recebida:', response.data);
+
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
+      setName('');
+      setEmail('');
+      setCourse('');
+      setPassword('');
+      navigation.navigate('Login'); 
+    } catch (error) {
+      console.error('Erro detalhado:', error.response ? error.response.data : error.message);
+      if (error.response) {
+        Alert.alert('Erro', 'Falha ao cadastrar usuário. ' + (error.response.data.message || 'Tente novamente.'));
+      } else if (error.request) {
+        Alert.alert('Erro', 'Não foi possível conectar ao servidor. Verifique sua conexão.');
+      } else {
+        Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o usuário. Tente novamente mais tarde.');
+      }
+    }
+  };
+
+  const renderPicker = () => {
+    if (Platform.OS === 'ios') {
+      return (
+        <TouchableOpacity
+          style={styles.pickerButton}
+          onPress={() => {
+            Alert.alert(
+              "Selecione um curso",
+              "",
+              courses.map(course => ({
+                text: course,
+                onPress: () => setCourse(course)
+              }))
+            );
+          }}
+        >
+          <Text style={styles.pickerButtonText}>
+            {course || "Selecione um curso"}
+          </Text>
+          <Icon name="chevron-down" size={16} color="#666" />
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={course}
+            onValueChange={(itemValue) => setCourse(itemValue)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Selecione um curso" value="" />
+            {courses.map((c, index) => (
+              <Picker.Item key={index} label={c} value={c} />
+            ))}
+          </Picker>
+        </View>
+      );
+    }
   };
 
   return (
@@ -47,36 +105,19 @@ export default function Register() {
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Curso</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={course}
-              onValueChange={(itemValue) => setCourse(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Selecione um curso" value="" />
-              {courses.map((c, index) => (
-                <Picker.Item key={index} label={c} value={c} />
-              ))}
-            </Picker>
-          </View>
+          {renderPicker()}
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Telefone</Text>
-          <View style={styles.phoneContainer}>
-            <TextInput
-              style={styles.phonePrefix}
-              value="+55"
-              editable={false}
-            />
-            <TextInput
-              style={styles.phoneInput}
-              placeholder="00 00000-0000"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-            />
-          </View>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="ada@example.com"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
         </View>
 
         <View style={styles.inputContainer}>
@@ -140,27 +181,19 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
   },
-  phoneContainer: {
+  pickerButton: {
     flexDirection: 'row',
-  },
-  phonePrefix: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 5,
     padding: 10,
-    fontSize: 16,
-    width: 50,
-    textAlign: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
   },
-  phoneInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 10,
+  pickerButtonText: {
     fontSize: 16,
-    marginLeft: 5,
+    color: '#333',
   },
   passwordContainer: {
     flexDirection: 'row',
