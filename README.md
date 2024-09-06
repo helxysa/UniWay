@@ -51,6 +51,9 @@ As técnicas e tecnologias utilizadas no projeto são:
 -  [**Nicolas Veloso**](https://github.com/xNicolosox)
 -  [**Rayanne Marques**](https://github.com/RayanneMarques)
 
+## Como executar o projeto?
+
+- [Clique aqui para ler mais](./COMO_EXECUTAR_O_PROJETO.md)
 
 ---
 
