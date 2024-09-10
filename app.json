@@ -4,12 +4,19 @@
     "slug": "UniWay",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "plugins": [
+        "@react-native-picker/picker",
+        "react-native-vector-icons",
+        "@react-navigation/bottom-tabs",
+        "@react-navigation/native",
+        "@react-navigation/stack",
+        "axios"
+      ]
     },
     "ios": {
       "supportsTablet": true
@@ -18,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.uniway.helxysa"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cfe6483e-2ecc-4728-83df-1102eb412d6e"
+      }
     }
   }
 }
