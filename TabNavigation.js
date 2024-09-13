@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Profile from "./componentes/Profile";
-import HomeScreen from "./componentes/HomeScreen";
+import Profile from "./src/screens/Profile";
+import HomeScreen from "./src/screens/HomeScreen";
 
 export default function TabNavigation() {
   const TabNav = createBottomTabNavigator();

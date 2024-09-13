@@ -2,11 +2,11 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import SlideBar from "./componentes/SlideBar";
-import InitialMenu from "./componentes/InitialMenu";
-import Register from "./componentes/Register";
-import Login from "./componentes/LogIn";
-import HomeScreen from "./componentes/HomeScreen";
+import InitialMenu from "./src/screens/InitialMenu";
+import RegisterScreen from "./src/screens/RegisterScreen";
+import OnboardingScreen from "./src/screens/OnboardingScreen";
+import Login from "./src/screens/LogIn";
+import HomeScreen from "./src/screens/HomeScreen";
 import TabNavigation from "./TabNavigation";
 
 const Stack = createStackNavigator();
@@ -14,10 +14,10 @@ const Stack = createStackNavigator();
 function AppNavigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SlideBar">
+      <Stack.Navigator initialRouteName="OnboardingScreen">
         <Stack.Screen
           name="Bem-Vindo"
-          component={SlideBar}
+          component={OnboardingScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -26,8 +26,8 @@ function AppNavigation() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Register"
-          component={Register}
+          name="RegisterScreen"
+          component={RegisterScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen

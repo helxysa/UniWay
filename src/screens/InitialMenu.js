@@ -12,7 +12,7 @@ export default function InitialMenu() {
       <View style={styles.headerLine} />
       <View style={styles.content}>
         <Image
-          source={require('../assets/computer 1.png')}
+          source={require('../../assets/images/computer.png')}
           style={styles.image}
           resizeMode="contain"
         />
@@ -20,12 +20,11 @@ export default function InitialMenu() {
         <Text style={styles.subtitle}>Dê o primeiro passo rumo ao seu futuro profissional</Text>
         
         <TouchableOpacity style={styles.registerButton}
-         onPress={() => navigation.navigate('Register')}>
+         onPress={() => navigation.navigate('RegisterScreen')}>
           <Text style={styles.registerButtonText}>Cadastre-se</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.loginButton}
-         onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity style={styles.loginButton}>
           <Text style={styles.loginButtonText}>Entrar</Text>
         </TouchableOpacity>
         
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   registerButton: {
-    backgroundColor: '#4F46E5', // Mesma cor do SlideBar
+    backgroundColor: '#4F46E5', // Cor da OnboardingScreen
     paddingVertical: height * 0.02,
     paddingHorizontal: width * 0.2,
     borderRadius: 8,

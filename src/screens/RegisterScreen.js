@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
-export default function Register() {
+export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [course, setCourse] = useState('');
   const [email, setEmail] = useState(''); 
