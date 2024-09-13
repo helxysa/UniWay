@@ -4,7 +4,7 @@
     <br />
     <br />
     <a href="https://github.com/helxysa/UniWay">
-      <img src="./assets/uniWayroxo.svg" width="160px" alt="UniWay">
+      <img src="./assets/images/uniWayRoxo.png" width="160px" alt="UniWay">
     </a>
   </h1>
 </div>
