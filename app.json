@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
       "plugins": [
@@ -29,7 +29,7 @@
       "package": "com.uniway.helxysa"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/uniWayRoxo.png"
     },
     "extra": {
       "eas": {
