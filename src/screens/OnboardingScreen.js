@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { View, Text, StyleSheet, FlatList, Animated, SafeAreaView, useWindowDimensions, TouchableOpacity, Dimensions } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import OnboardingItem from "./OnboardingItem";
 import Slides from "../components/Slides";
@@ -27,6 +28,17 @@ export default Onboarding = () => {
       navigation.navigate('InitialMenu');
     }
   };
+
+
+  const handleCompleteOnboarding = async () => {
+    try {
+      await AsyncStorage.setItem('@onboarding_completed', 'true');
+      navigation.replace('InitialMenu');
+    } catch (error) {
+      console.log('Erro ao salvar o estado do onboarding', error);
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -57,14 +69,25 @@ export default Onboarding = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          onPress={nextSlide}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>
-            {currentIndex === Slides.length - 1 ? "Começar" : "Próximo"}
-          </Text>
-        </TouchableOpacity>
+        {currentIndex === Slides.length - 1 ? (
+          <TouchableOpacity
+            onPress={handleCompleteOnboarding}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>
+              Começar
+            </Text>
+          </TouchableOpacity> 
+          ) : (
+          <TouchableOpacity 
+            onPress={nextSlide}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>
+              Próximo
+            </Text>
+          </TouchableOpacity> )
+        }
       </View>
     </SafeAreaView>
   );
