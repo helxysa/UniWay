@@ -24,7 +24,8 @@ export default function InitialMenu() {
           <Text style={styles.registerButtonText}>Cadastre-se</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.loginButton}>
+        <TouchableOpacity style={styles.loginButton}
+         onPress={() => navigation.navigate('Login')}>
           <Text style={styles.loginButtonText}>Entrar</Text>
         </TouchableOpacity>
         
@@ -55,21 +56,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.05,
   },
   image: {
-    width: width * 0.4,
-    height: width * 0.4,
-    marginBottom: height * 0.05,
+    width: width * 0.6,
+    height: width * 0.6,
+    marginBottom: height * 0.04,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontFamily: 'Poppins-Bold',
+    // fontWeight: '700',
+    fontSize: 34,
+    lineHeight: 41,
+    color: '#2A2A2A', //#493d8a
     textAlign: 'center',
+    margin: height * 0.01,
+    padding: 8
   },
   subtitle: {
-    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
+    fontSize: 22,
+    lineHeight: 28,
     textAlign: 'center',
+    marginHorizontal: height * 0.03,
     marginBottom: height * 0.03,
-    color: '#6B7280',
+    color: '#2A2A2A', //'#6B7280'
   },
   registerButton: {
     backgroundColor: '#4F46E5', // Cor da OnboardingScreen
