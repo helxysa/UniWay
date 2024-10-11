@@ -33,8 +33,10 @@
     },
     "extra": {
       "eas": {
+        "owner": "lazy_engineering",
         "projectId": "cfe6483e-2ecc-4728-83df-1102eb412d6e"
       }
-    }
+    },
+    "owner": "lazy_engineering"
   }
 }
