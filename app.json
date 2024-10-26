@@ -18,10 +18,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.lazyengineering.uniway"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "owner": "lazy_engineering",
+        "projectId": "6cb774cc-32c5-47d8-b7f1-31b1553c5409"
+      }
+    },
+    "owner": "lazy_engineering"
   }
 }
