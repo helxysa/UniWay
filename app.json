@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "UniWay",
-    "slug": "UniWay",
+    "slug": "uniway",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.uniway.helxysa"
+      "package": "uniway"
     },
     "web": {
       "favicon": "./assets/images/uniWayRoxo.png"
@@ -34,7 +34,7 @@
     "extra": {
       "eas": {
         "owner": "lazy_engineering",
-        "projectId": "cfe6483e-2ecc-4728-83df-1102eb412d6e"
+        "projectId": "cdff1fb9-b925-4ddb-ae81-32d8189919d1"
       }
     },
     "owner": "lazy_engineering"
