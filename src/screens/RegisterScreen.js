@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert, Platform } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert, Platform, ActivityIndicator, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
@@ -11,40 +11,68 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const courses = ['Ciência da Computação', 'Engenharia Elétrica', 'Relações Internacionais'];
 
-  const handleRegister = async () => {
-    console.log('Iniciando registro...');
-    if (!name || !course || !email || !password) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
-      return;
+  const apiClient = useMemo(() => axios.create({
+    baseURL: 'https://api-uniway-firebase.vercel.app',
+    timeout: 10000,
+    headers: {
+      'Content-Type': 'application/json'
     }
+  }), []);
 
-    const newUser = { name, email, course, password };
-    console.log('Dados de registro:', JSON.stringify(newUser, null, 2));
+  const LoadingModal = () => (
+    <Modal transparent visible={isLoading}>
+      <View style={styles.modalContainer}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#7C3AED" />
+          <Text style={styles.loadingText}>Cadastrando você...</Text>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const validateInputs = () => {
+    if (!name.trim() || !course || !email.trim() || !password.trim()) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return false;
+    }
+    if (!email.includes('@')) {
+      Alert.alert('Erro', 'Por favor, insira um email válido.');
+      return false;
+    }
+    if (password.length < 6) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
+      return false;
+    }
+    return true;
+  };
+
+  const handleRegister = async () => {
+    if (!validateInputs()) return;
+
+    setIsLoading(true);
+    const newUser = { name: name.trim(), email: email.trim(), course, password };
 
     try {
-      console.log('Fazendo requisição para:', 'https://api-uniway.onrender.com/users');
-      const response = await axios.post('https://api-uniway.onrender.com/users', newUser);
-      console.log('Resposta recebida:', response.data);
-
+      const response = await apiClient.post('/api/users', newUser);
       Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
       setName('');
       setEmail('');
       setCourse('');
       setPassword('');
-      navigation.navigate('Login'); 
+      navigation.navigate('Login');
     } catch (error) {
-      console.error('Erro detalhado:', error.response ? error.response.data : error.message);
-      if (error.response) {
-        Alert.alert('Erro', 'Falha ao cadastrar usuário. ' + (error.response.data.message || 'Tente novamente.'));
-      } else if (error.request) {
-        Alert.alert('Erro', 'Não foi possível conectar ao servidor. Verifique sua conexão.');
-      } else {
-        Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o usuário. Tente novamente mais tarde.');
-      }
+      const errorMessage = error.response?.data?.message || 
+        error.request ? 'Não foi possível conectar ao servidor. Verifique sua conexão.' :
+        'Ocorreu um erro ao cadastrar o usuário. Tente novamente mais tarde.';
+      
+      Alert.alert('Erro', errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -70,26 +98,27 @@ export default function RegisterScreen() {
           <Icon name="chevron-down" size={16} color="#666" />
         </TouchableOpacity>
       );
-    } else {
-      return (
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={course}
-            onValueChange={(itemValue) => setCourse(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Selecione um curso" value="" />
-            {courses.map((c, index) => (
-              <Picker.Item key={index} label={c} value={c} />
-            ))}
-          </Picker>
-        </View>
-      );
     }
+
+    return (
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={course}
+          onValueChange={(itemValue) => setCourse(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Selecione um curso" value="" />
+          {courses.map((c, index) => (
+            <Picker.Item key={index} label={c} value={c} />
+          ))}
+        </Picker>
+      </View>
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <LoadingModal />
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>Crie uma conta</Text>
 
@@ -100,6 +129,7 @@ export default function RegisterScreen() {
             placeholder="Ada Lovelace"
             value={name}
             onChangeText={setName}
+            editable={!isLoading}
           />
         </View>
 
@@ -117,6 +147,7 @@ export default function RegisterScreen() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            editable={!isLoading}
           />
         </View>
 
@@ -129,6 +160,7 @@ export default function RegisterScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              editable={!isLoading}
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
               <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#666" />
@@ -136,7 +168,11 @@ export default function RegisterScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <TouchableOpacity 
+          style={[styles.button, isLoading && styles.buttonDisabled]} 
+          onPress={handleRegister}
+          disabled={isLoading}
+        >
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -216,9 +252,38 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
+  buttonDisabled: {
+    backgroundColor: '#9CA3AF',
+  },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
   },
 });

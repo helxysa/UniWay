@@ -9,6 +9,8 @@ import OnboardingScreen from "./src/screens/OnboardingScreen";
 import Login from "./src/screens/LogIn";
 import HomeScreen from "./src/screens/HomeScreen";
 import TabNavigation from "./TabNavigation";
+import Saved from "./src/screens/Saved";
+import Benefits from "./src/screens/Benefits";
 
 const Stack = createStackNavigator();
 
@@ -66,6 +68,16 @@ function AppNavigation() {
           name="TabNavigation"
           component={TabNavigation}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Saved"
+          component={Saved}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="Benefits"
+          component={Benefits}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>

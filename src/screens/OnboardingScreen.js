@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, Text, StyleSheet, FlatList, Animated, SafeAreaView, useWindowDimensions, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, FlatList, Animated, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -12,23 +12,31 @@ const { width, height } = Dimensions.get('window');
 export default Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const slidesRef = useRef(null)
+  const slidesRef = useRef(null);
   const navigation = useNavigation();
 
-  const viewableItemsChanged = useRef(({ viewableItems }) => {
-    setCurrentIndex(viewableItems[0].index);
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+    minimumViewTime: 300,
   }).current;
 
-  const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+  const viewableItemsChanged = useRef(({ viewableItems }) => {
+    if (viewableItems[0]) {
+      setCurrentIndex(viewableItems[0].index);
+    }
+  }).current;
 
   const nextSlide = () => {
-    if (currentIndex < Slides.length - 1) {
-      slidesRef.current.scrollToIndex({index: currentIndex + 1});
+    if (currentIndex < Slides.length - 1 && slidesRef.current) {
+      slidesRef.current.scrollToIndex({
+        index: currentIndex + 1,
+        animated: true,
+        viewPosition: 0,
+      });
     } else {
       navigation.navigate('InitialMenu');
     }
   };
-
 
   const handleCompleteOnboarding = async () => {
     try {
@@ -39,10 +47,9 @@ export default Onboarding = () => {
     }
   };
 
-
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <View style={{ flex: 3}}>
+      <View style={{ flex: 3 }}>
         <FlatList
           data={Slides}
           renderItem={({ item }) => <OnboardingItem item={item} />}
@@ -57,10 +64,15 @@ export default Onboarding = () => {
               useNativeDriver: false,
             }
           )}
-          scrollEventThrottle={32}
+          scrollEventThrottle={16}
           onViewableItemsChanged={viewableItemsChanged}
-          viewablityConfig={viewConfig}
+          viewabilityConfig={viewabilityConfig}
           ref={slidesRef}
+          getItemLayout={(data, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
         />
       </View>
 
@@ -74,20 +86,13 @@ export default Onboarding = () => {
             onPress={handleCompleteOnboarding}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>
-              Começar
-            </Text>
-          </TouchableOpacity> 
-          ) : (
-          <TouchableOpacity 
-            onPress={nextSlide}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>
-              Próximo
-            </Text>
-          </TouchableOpacity> )
-        }
+            <Text style={styles.buttonText}>Começar</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={nextSlide} style={styles.button}>
+            <Text style={styles.buttonText}>Próximo</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.05,
   },
   button: {
-    backgroundColor: '#4F46E5', // bg-indigo-600
+    backgroundColor: '#4F46E5',
     paddingVertical: height * 0.02,
     borderRadius: 8,
     alignItems: 'center',
@@ -122,6 +127,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 10,
+    fontSize: 16,
   },
 });

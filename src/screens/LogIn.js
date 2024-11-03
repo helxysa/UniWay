@@ -1,35 +1,85 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  StyleSheet, 
+  SafeAreaView, 
+  ScrollView, 
+  Alert,
+  ActivityIndicator 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { authStorage } from '../authStorage';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    try {
+      const userData = await authStorage.getUser();
+      if (userData) {
+        navigation.replace('TabNavigation', {
+          screen: 'Profile',
+          params: {
+            userId: userData.id,
+            userEmail: userData.email,
+            userName: userData.name
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao verificar usuário:', error);
+    }
+  };
+
+  const API_URL = 'https://api-uniway-firebase.vercel.app';
+  
   const handleLogin = async () => {
-    console.log('Iniciando login...');
     if (!email || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
 
+    if (!email.includes('@')) {
+      Alert.alert('Erro', 'Por favor, insira um email válido.');
+      return;
+    }
+  
     const loginData = { 
       email: email.trim(),
       password: password.trim() 
     };
-    console.log('Dados de login:', JSON.stringify(loginData, null, 2));
+  
+    setIsLoading(true);
 
     try {
-      console.log('Fazendo requisição para:', 'https://api-uniway.onrender.com/login');
-      const response = await axios.post('https://api-uniway.onrender.com/login', loginData);
-      console.log('Resposta recebida:', response.data);
-
+      const response = await axios.post(`${API_URL}/api/login`, loginData);
+      const userData = response.data.user;
+      
+      await authStorage.saveUser(userData);
+      
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      navigation.replace('TabNavigation');
+      navigation.replace('TabNavigation', {
+        screen: 'Profile',
+        params: {
+          userId: userData.id,
+          userEmail: userData.email,
+          userName: userData.name
+        }
+      });
     } catch (error) {
       console.error('Erro detalhado:', error.response ? error.response.data : error.message);
       if (error.response) {
@@ -39,7 +89,13 @@ export default function Login() {
       } else {
         Alert.alert('Erro', 'Ocorreu um erro ao fazer login. Tente novamente mais tarde.');
       }
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const navigateToRegister = () => {
+    navigation.navigate('RegisterScreen');
   };
 
   return (
@@ -56,6 +112,7 @@ export default function Login() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            editable={!isLoading}
           />
         </View>
 
@@ -68,19 +125,44 @@ export default function Login() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              editable={!isLoading}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+            <TouchableOpacity 
+              onPress={() => setShowPassword(!showPassword)} 
+              style={styles.eyeIcon}
+              disabled={isLoading}
+            >
               <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#666" />
             </TouchableOpacity>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Entrar</Text>
+        <TouchableOpacity 
+          style={[styles.button, isLoading && styles.buttonDisabled]} 
+          onPress={handleLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#FFFFFF" />
+          ) : (
+            <Text style={styles.buttonText}>Entrar</Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.forgotPassword}>
+        <TouchableOpacity 
+          style={styles.forgotPassword}
+          disabled={isLoading}
+        >
           <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.registerContainer} 
+          onPress={navigateToRegister}
+          disabled={isLoading}
+        >
+          <Text style={styles.registerText}>Ainda não tem conta? </Text>
+          <Text style={styles.registerLink}>Cadastre-se</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -137,6 +219,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 10,
+    height: 50,
+    justifyContent: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#9CA3AF',
   },
   buttonText: {
     color: '#FFFFFF',
@@ -150,5 +237,20 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     color: '#7C3AED',
     fontSize: 14,
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  registerText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  registerLink: {
+    fontSize: 14,
+    color: '#7C3AED',
+    fontWeight: 'bold',
   },
 });

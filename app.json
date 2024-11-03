@@ -2,6 +2,7 @@
   "expo": {
     "name": "UniWay",
     "slug": "uniway",
+    "icon": "./assets/images/uniWayRoxo.png",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
