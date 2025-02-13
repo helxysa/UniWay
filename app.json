@@ -1,15 +1,23 @@
 {
   "expo": {
     "name": "UniWay",
-    "slug": "UniWay",
+    "slug": "uniway",
+    "icon": "./assets/images/uniWayRoxo.png",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "plugins": [
+        "@react-native-picker/picker",
+        "react-native-vector-icons",
+        "@react-navigation/bottom-tabs",
+        "@react-navigation/native",
+        "@react-navigation/stack",
+        "axios"
+      ]
     },
     "ios": {
       "supportsTablet": true
@@ -18,10 +26,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "uniway"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/images/uniWayRoxo.png"
+    },
+    "extra": {
+      "eas": {
+        "owner": "lazy_engineering",
+        "projectId": "cdff1fb9-b925-4ddb-ae81-32d8189919d1"
+      }
+    },
+    "owner": "lazy_engineering"
   }
 }

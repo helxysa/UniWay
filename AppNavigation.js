@@ -1,20 +1,47 @@
-// Navigation.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import SlideBar from "./componentes/SlideBar";
-import InitialMenu from "./componentes/InitialMenu";
-import Register from "./componentes/Register";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import InitialMenu from "./src/screens/InitialMenu";
+import RegisterScreen from "./src/screens/RegisterScreen";
+import OnboardingScreen from "./src/screens/OnboardingScreen";
+import Login from "./src/screens/LogIn";
+import HomeScreen from "./src/screens/HomeScreen";
+import TabNavigation from "./TabNavigation";
+import Saved from "./src/screens/Saved";
+import Benefits from "./src/screens/Benefits";
 
 const Stack = createStackNavigator();
 
 function AppNavigation() {
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(null);
+
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const status = await AsyncStorage.getItem('@onboarding_completed');
+        setIsOnboardingCompleted(status === 'true');
+      } catch (error) {
+        console.error('Erro ao verificar o status do onboarding:', error);
+      }
+    };
+    
+    checkOnboardingStatus();
+  }, []);
+
+  if (isOnboardingCompleted === null) {
+    return null; // Pode ser substituído por uma tela de carregamento
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SlideBar">
+      <Stack.Navigator
+        initialRouteName={isOnboardingCompleted ? "InitialMenu" : "Bem-Vindo"}
+      >
         <Stack.Screen
           name="Bem-Vindo"
-          component={SlideBar}
+          component={OnboardingScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -23,9 +50,34 @@ function AppNavigation() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Register"
-          component={Register}
+          name="RegisterScreen"
+          component={RegisterScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TabNavigation"
+          component={TabNavigation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Saved"
+          component={Saved}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="Benefits"
+          component={Benefits}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
